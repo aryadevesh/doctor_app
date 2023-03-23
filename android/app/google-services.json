@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "371837692985",
+    "firebase_url": "https://hellodoc-0110-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "hellodoc-0110",
+    "storage_bucket": "hellodoc-0110.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:371837692985:android:f6e341b1f468678f1171e8",
+        "android_client_info": {
+          "package_name": "com.HelloDoc.doctorapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "371837692985-h89l1bvnt891h50am20gnnta611bh8ue.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjx4KmmmvTH0rm6j9thBXVHD1PapTHInc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "371837692985-h89l1bvnt891h50am20gnnta611bh8ue.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
