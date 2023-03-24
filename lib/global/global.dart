@@ -16,3 +16,4 @@ StreamSubscription<Position>? streamSubscriptionPosition;
 AssetsAudioPlayer audioPlayer = AssetsAudioPlayer();
 Position? doctorCurrentPosition;
 DoctorData onlineDoctorData = DoctorData();
+StreamSubscription<Position>? streamSubscriptionDoctorLivePosition;

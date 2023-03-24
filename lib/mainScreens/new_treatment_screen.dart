@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -48,6 +49,12 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
   BitmapDescriptor? iconAnimatedMarker;
   var geoLocator = Geolocator();
 
+  Position? onlineDoctorCurrentPosition;
+  String rideRequestStatus = "accepted";
+
+  String durationFromOriginToDestination = "";
+
+  bool isRequestDirectionDetails = false;
 
   //Step 1:: when driver accepts the user ride request
   // originLatLng = doctor rCurrent Location
@@ -181,6 +188,64 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
     }
   }
 
+  getDoctorsLocationUpdatesAtRealTime()
+  {
+    LatLng oldLatLng = LatLng(0,0);
+    streamSubscriptionDoctorLivePosition = Geolocator.getPositionStream()
+        .listen((Position position)
+    {
+      doctorCurrentPosition = position;
+      onlineDoctorCurrentPosition = position;
+
+
+      LatLng latLngLiveDoctorPosition = LatLng(
+        onlineDoctorCurrentPosition!.latitude,
+        onlineDoctorCurrentPosition!.longitude,
+      );
+
+      Marker animatingMarker = Marker(
+        markerId: const MarkerId("AnimatedMarker"),
+        position: latLngLiveDoctorPosition,
+        icon: iconAnimatedMarker!,
+        infoWindow: const InfoWindow(title: "This is your Position"),
+      );
+      setState(() {
+        CameraPosition cameraPosition = CameraPosition(target: latLngLiveDoctorPosition, zoom : 16);
+        newTreatmentGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+        setOfMarkers.removeWhere((element) => element.markerId.value == "AnimatedMarker");
+        setOfMarkers.add(animatingMarker);
+      });
+      oldLatLng = latLngLiveDoctorPosition;
+      updateDurationTimeAtRealTime();
+    });
+  }
+  updateDurationTimeAtRealTime()async{
+
+    isRequestDirectionDetails = true;
+    if(isRequestDirectionDetails == false){
+      if(onlineDoctorCurrentPosition == null){
+        return;
+      }
+      var originLatLng = LatLng(
+          onlineDoctorCurrentPosition!.latitude,
+          onlineDoctorCurrentPosition!.longitude);
+      var destinationLatLng;
+      if(rideRequestStatus == "accepted") {
+        var destinationLatLng = widget.userVisitRequestDetails!.originLatLng;
+      }
+      //else{
+      //   destinationLatLng = widget.userVisitRequestDetails!.destinationLatLng;
+      // }
+      var directionInformation = await AssistantMethods.obtainOriginToDestinationDirectionDetails(originLatLng, destinationLatLng);
+
+      if(directionInformation!=null){
+        setState(() {
+          durationFromOriginToDestination = directionInformation.duration_text!;
+        });
+      }
+    }
+
+  }
   @override
   Widget build(BuildContext context) {
 
