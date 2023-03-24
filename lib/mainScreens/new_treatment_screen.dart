@@ -217,6 +217,15 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
       });
       oldLatLng = latLngLiveDoctorPosition;
       updateDurationTimeAtRealTime();
+      Map doctorLatLngDataMap = {
+        "latitude":onlineDoctorCurrentPosition!.latitude.toString(),
+        "longitude":onlineDoctorCurrentPosition!.longitude.toString(),
+
+      };
+      FirebaseDatabase.instance.ref().child("All visit Requests")
+          .child(widget.userVisitRequestDetails!.visitRequestId!)
+          .child("doctorLocation")
+          .set(doctorLatLngDataMap);
     });
   }
   updateDurationTimeAtRealTime()async{
@@ -314,7 +323,7 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
                     children:[
                        //Time to reach the patient
                       Text(
-                        "Arriving In 10 min",
+                        durationFromOriginToDestination,
                         style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
