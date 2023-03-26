@@ -50,9 +50,9 @@ class PushNotificationSystem {
         double originLat = double.parse((snapData.snapshot.value! as Map)["origin"]["latitude"]);
         double originLng = double.parse((snapData.snapshot.value! as Map)["origin"]["longitude"]);
         String originAddress = (snapData.snapshot.value! as Map)["originAddress"];
-        double destinationLat = double.parse((snapData.snapshot.value! as Map)["destination"]["latitude"]);
-        double destinationLng = double.parse((snapData.snapshot.value! as Map)["destination"]["longitude"]);
-        String destinationAddress = (snapData.snapshot.value! as Map)["destinationAddress"];
+        // double destinationLat = double.parse((snapData.snapshot.value! as Map)["destination"]["latitude"]);
+        // double destinationLng = double.parse((snapData.snapshot.value! as Map)["destination"]["longitude"]);
+        // String destinationAddress = (snapData.snapshot.value! as Map)["destinationAddress"];
 
 
         String userName = (snapData.snapshot.value! as Map)["userName"];
@@ -62,8 +62,9 @@ class PushNotificationSystem {
 
         userVisitRequestInformation userVisitRequestDetails = userVisitRequestInformation();
         userVisitRequestDetails.originLatLng = LatLng(originLat, originLng);
-        userVisitRequestDetails.destinationLatLng = LatLng(destinationLat, destinationLng);
+        //userVisitRequestDetails.destinationLatLng = LatLng(destinationLat, destinationLng);
         userVisitRequestDetails.originAddress = originAddress;
+        //userVisitRequestDetails.destinationAddress = destinationAddress;
 
 
         userVisitRequestDetails.userName = userName;

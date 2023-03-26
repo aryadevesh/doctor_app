@@ -37,6 +37,7 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
 
   String? buttonTitle = "Arrived";
   Color? buttonColor = Colors.green;
+  String statusBtn = "accepted";
 
   Set<Marker> setOfMarkers = Set<Marker>();
   Set<Circle> setOfCircle = Set<Circle>();
@@ -57,7 +58,7 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
   bool isRequestDirectionDetails = false;
 
   //Step 1:: when driver accepts the user ride request
-  // originLatLng = doctor rCurrent Location
+  // originLatLng = doctor Current Location
   // destinationLatLng = user PickUp Location
 
   Future<void> drawPolyLineFromOriginToDestination(LatLng originLatLng, LatLng destinationLatLng) async
@@ -216,7 +217,9 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
         setOfMarkers.add(animatingMarker);
       });
       oldLatLng = latLngLiveDoctorPosition;
+
       updateDurationTimeAtRealTime();
+
       Map doctorLatLngDataMap = {
         "latitude":onlineDoctorCurrentPosition!.latitude.toString(),
         "longitude":onlineDoctorCurrentPosition!.longitude.toString(),
@@ -229,29 +232,30 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
     });
   }
   updateDurationTimeAtRealTime()async{
-
-    isRequestDirectionDetails = true;
     if(isRequestDirectionDetails == false){
+      isRequestDirectionDetails = true;
       if(onlineDoctorCurrentPosition == null){
         return;
       }
       var originLatLng = LatLng(
           onlineDoctorCurrentPosition!.latitude,
           onlineDoctorCurrentPosition!.longitude);
-      var destinationLatLng;
-      if(rideRequestStatus == "accepted") {
-        var destinationLatLng = widget.userVisitRequestDetails!.originLatLng;
-      }
+
+      var destinationLatLng = widget.userVisitRequestDetails!.originLatLng;
+      // if(rideRequestStatus == "accepted") {
+      //   var destinationLatLng = widget.userVisitRequestDetails!.originLatLng;
+      // }
       //else{
       //   destinationLatLng = widget.userVisitRequestDetails!.destinationLatLng;
       // }
-      var directionInformation = await AssistantMethods.obtainOriginToDestinationDirectionDetails(originLatLng, destinationLatLng);
+      var directionInformation = await AssistantMethods.obtainOriginToDestinationDirectionDetails(originLatLng, destinationLatLng!);
 
       if(directionInformation!=null){
         setState(() {
           durationFromOriginToDestination = directionInformation.duration_text!;
         });
       }
+      isRequestDirectionDetails = false;
     }
 
   }
@@ -294,6 +298,8 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
 
             drawPolyLineFromOriginToDestination(doctorCurrentLatLng, userPickUpLatLng!);
 
+            getDoctorsLocationUpdatesAtRealTime();
+
             },
           ),
           Positioned(
@@ -323,7 +329,7 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
                     children:[
                        //Time to reach the patient
                       Text(
-                        durationFromOriginToDestination,
+                        "Arriving in "+durationFromOriginToDestination,
                         style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -421,7 +427,10 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
 
                       ElevatedButton.icon(onPressed: ()
                       {
-
+                        if(statusBtn == "accepted"){ //doctor has arrived at user PickUp Location
+                          statusBtn = "arrived";
+                          FirebaseDatabase.instance.ref().child("All visit Requests").
+                        }
                       },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: buttonColor,

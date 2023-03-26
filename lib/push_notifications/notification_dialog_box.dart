@@ -211,7 +211,7 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox>
       }
 
 //***** change this id to getVisitRequestId later *****
-      if("-NPfQN7lqj3HQ2sWQf1B" == widget.userVisitRequestDetails!.visitRequestId){
+      if("-NRR_OMmi-KhIsbRlNAJ" == widget.userVisitRequestDetails!.visitRequestId){
             FirebaseDatabase.instance.ref()
                 .child("doctors")
                 .child(currentFirebaseUser!.uid)

@@ -5,6 +5,7 @@ class userVisitRequestInformation{
   LatLng? destinationLatLng;
 
   String? originAddress;
+  String? destinationAddress;
   String? visitRequestId;
   String? userName;
   String? userPhone;
@@ -14,6 +15,7 @@ class userVisitRequestInformation{
     this.destinationLatLng,
 
     this.originAddress,
+    this.destinationAddress,
     this.visitRequestId,
     this.userName,
     this.userPhone,
