@@ -429,7 +429,16 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
                       {
                         if(statusBtn == "accepted"){ //doctor has arrived at user PickUp Location
                           statusBtn = "arrived";
-                          FirebaseDatabase.instance.ref().child("All visit Requests").
+
+                          FirebaseDatabase.instance.ref()
+                              .child("All visit Requests")
+                              .child(widget.userVisitRequestDetails!.visitRequestId!)
+                              .child("status")
+                              .set(statusBtn);
+                          setState(() {
+                            buttonTitle = "Start Treatment";//stating treatment button changed
+                            buttonColor = Colors.lightGreen;
+                          });
                         }
                       },
                         style: ElevatedButton.styleFrom(
