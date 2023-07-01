@@ -71,7 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
     else
     {
       Navigator.pop(context);
-      Fluttertoast.showToast(msg: "Error occured during login.");
+      Fluttertoast.showToast(msg: "Error occurred during login.");
     }
   }
   @override

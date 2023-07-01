@@ -3,8 +3,10 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:doctor_app/assistants/assistant_methods.dart';
 import 'package:doctor_app/mainScreens/new_treatment_screen.dart';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../global/global.dart';
@@ -152,8 +154,28 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox>
                       audioPlayer = AssetsAudioPlayer();
 
                       //cancel the rideRequest
+                      FirebaseDatabase.instance.ref()
+                          .child("All visit Requests")
+                          .child(widget.userVisitRequestDetails!.visitRequestId!)
+                          .remove().then((value){
+                            FirebaseDatabase.instance.ref()
+                                .child("doctors")
+                                .child(currentFirebaseUser!.uid)
+                                .child("newVisitStatus").set("idle");
+                      }).then((value){
+                        FirebaseDatabase.instance.ref()
+                            .child("doctors")
+                            .child(currentFirebaseUser!.uid)
+                            .child("treatmentsHistory")
+                            .child(widget.userVisitRequestDetails!.visitRequestId!).remove();
+                      }).then((value){
+                        Fluttertoast.showToast(msg: "Visit Request has be cancelled, Successfully. Restart App Now.");
+                      });
+                      
 
-                      Navigator.pop(context);
+                      Future.delayed(const Duration(milliseconds: 3000),(){
+                        SystemNavigator.pop();
+                      });
                     },
                     child: Text(
                       "Cancel".toUpperCase(),
@@ -211,7 +233,7 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox>
       }
 
 //***** change this id to getVisitRequestId later *****
-      if("-NRR_OMmi-KhIsbRlNAJ" == widget.userVisitRequestDetails!.visitRequestId){
+      if(getVisitRequestId == widget.userVisitRequestDetails!.visitRequestId){
             FirebaseDatabase.instance.ref()
                 .child("doctors")
                 .child(currentFirebaseUser!.uid)

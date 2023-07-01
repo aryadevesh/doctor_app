@@ -1,14 +1,13 @@
-import 'dart:async';
 
+import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:doctor_app/models/user_visit_request_information.dart';
 import 'package:flutter/material.dart';
-
 import '../assistants/assistant_methods.dart';
+import '../widgets/doctor_fees_box.dart';
 import '../global/global.dart';
 import '../widgets/progress_dialog.dart';
 
@@ -51,11 +50,12 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
   var geoLocator = Geolocator();
 
   Position? onlineDoctorCurrentPosition;
-  String rideRequestStatus = "accepted";
+  String visitRequestStatus = "accepted";
 
   String durationFromOriginToDestination = "";
 
   bool isRequestDirectionDetails = false;
+
 
   //Step 1:: when driver accepts the user ride request
   // originLatLng = doctor Current Location
@@ -76,7 +76,7 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
     print(directionDetailsInfo!.e_points);
 
     PolylinePoints pPoints = PolylinePoints();
-    List<PointLatLng> decodedPolyLinePointsResultList = pPoints.decodePolyline(directionDetailsInfo!.e_points!);
+    List<PointLatLng> decodedPolyLinePointsResultList = pPoints.decodePolyline(directionDetailsInfo.e_points!);
 
     polyLinePositionCoordinates.clear();
 
@@ -241,21 +241,23 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
           onlineDoctorCurrentPosition!.latitude,
           onlineDoctorCurrentPosition!.longitude);
 
-      var destinationLatLng = widget.userVisitRequestDetails!.originLatLng;
-      // if(rideRequestStatus == "accepted") {
-      //   var destinationLatLng = widget.userVisitRequestDetails!.originLatLng;
-      // }
-      //else{
-      //   destinationLatLng = widget.userVisitRequestDetails!.destinationLatLng;
-      // }
-      var directionInformation = await AssistantMethods.obtainOriginToDestinationDirectionDetails(originLatLng, destinationLatLng!);
+      var destinationLatLng ;
+       if(visitRequestStatus == "accepted")
+       {
+         var destinationLatLng = widget.userVisitRequestDetails!.originLatLng;
+         // }
+         //else{
+         //   destinationLatLng = widget.userVisitRequestDetails!.destinationLatLng;
+         // }
+         var directionInformation = await AssistantMethods.obtainOriginToDestinationDirectionDetails(originLatLng, destinationLatLng!);
 
-      if(directionInformation!=null){
-        setState(() {
-          durationFromOriginToDestination = directionInformation.duration_text!;
-        });
-      }
-      isRequestDirectionDetails = false;
+         if(directionInformation!=null){
+           setState(() {
+             durationFromOriginToDestination = directionInformation.duration_text!;
+           });
+         }
+         isRequestDirectionDetails = false;
+       }
     }
 
   }
@@ -329,7 +331,7 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
                     children:[
                        //Time to reach the patient
                       Text(
-                        "Arriving in "+durationFromOriginToDestination,
+                        "Arriving in "+ durationFromOriginToDestination,
                         style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -425,20 +427,40 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
 
                       const SizedBox(height: 26),
 
-                      ElevatedButton.icon(onPressed: ()
+                      ElevatedButton.icon(onPressed: ()async
                       {
-                        if(statusBtn == "accepted"){ //doctor has arrived at user PickUp Location
-                          statusBtn = "arrived";
+                        if(visitRequestStatus == "accepted"){ //doctor has arrived at user PickUp Location
+                          visitRequestStatus = "arrived";
 
                           FirebaseDatabase.instance.ref()
                               .child("All visit Requests")
                               .child(widget.userVisitRequestDetails!.visitRequestId!)
                               .child("status")
-                              .set(statusBtn);
+                              .set(visitRequestStatus);
                           setState(() {
                             buttonTitle = "Start Treatment";//stating treatment button changed
                             buttonColor = Colors.lightGreen;
                           });
+                        }
+
+                        else if(visitRequestStatus == "arrived"){ //doctor has started his treatment
+
+                          visitRequestStatus = "onTreatment";
+
+                          FirebaseDatabase.instance.ref()
+                              .child("All visit Requests")
+                              .child(widget.userVisitRequestDetails!.visitRequestId!)
+                              .child("status")
+                              .set(visitRequestStatus);
+                          setState(() {
+                            buttonTitle = "End Treatment";//stating treatment button changed
+                            buttonColor = Colors.lightBlue;
+                          });
+                        }
+                        else if(visitRequestStatus == "onTreatment"){ //doctor has started his treatment
+
+                             endTreatmentNow();
+
                         }
                       },
                         style: ElevatedButton.styleFrom(
@@ -466,6 +488,70 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
         ],
       )
     );
+  }
+
+  endTreatmentNow()async
+  {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context)=>ProgressDialog(message: "Please wait..."),
+    );
+
+    // visit amount
+    //var currentDoctorPositionLatLng = LatLng(
+        //onlineDoctorCurrentPosition!.latitude,
+        //onlineDoctorCurrentPosition!.longitude);
+
+    //var treatmentDetails = await AssistantMethods.obtainOriginToDestinationDirectionDetails(
+        //currentDoctorPositionLatLng,
+        //widget.userVisitRequestDetails!.originLatLng!);
+   String? totalFareAmount = (onlineDoctorData.base_price.toString());
+    FirebaseDatabase.instance.ref().child("All visit Requests")
+        .child(widget.userVisitRequestDetails!.visitRequestId!)
+        .child("treatmentAmount")
+        .set(onlineDoctorData.base_price.toString() + " Extra If Applicable");
+    FirebaseDatabase.instance.ref().child("All visit Requests")
+        .child(widget.userVisitRequestDetails!.visitRequestId!)
+        .child("status")
+        .set("ended");
+    streamSubscriptionDoctorLivePosition!.cancel();
+    Navigator.pop(context);
+
+    //display doctor fees in dialog box
+    showDialog(context: context,
+      builder: (BuildContext c)=> DoctorFeesCollectionDialog(
+      totalFareAmount: totalFareAmount,
+    ),);
+
+    saveDoctorEarnings(totalFareAmount);
+  }
+  saveDoctorEarnings(String totalFareAmount){
+    FirebaseDatabase.instance.ref()
+        .child("doctors")
+        .child(currentFirebaseUser!.uid).child("earnings")
+        .once().then((snap)
+    {
+      if(snap.snapshot.value != null){ //earning's sub child exists
+        double TotalFareAmount = double.parse(totalFareAmount); // converting totalFareAmount to double to add the previous earning to the new ones.
+        double oldEarnings = double.parse(snap.snapshot.value.toString());
+        double doctorTotalEarnings = TotalFareAmount + oldEarnings;
+
+        FirebaseDatabase.instance.ref()
+            .child("doctors")
+            .child(currentFirebaseUser!.uid)
+            .child("earnings")
+            .set(doctorTotalEarnings.toString());
+      }
+      else{
+        FirebaseDatabase.instance.ref()
+            .child("doctors")
+            .child(currentFirebaseUser!.uid)
+            .child("earnings")
+            .set(totalFareAmount.toString());
+      }
+    });
+
   }
 
   saveAssignedDoctorDetailsToUserVisitRequest()

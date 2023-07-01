@@ -124,7 +124,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         borderSide: BorderSide(color: Colors.black),
                   ),
                   hintStyle: TextStyle(
-                    color: Colors.grey,
+                    color: Colors.black,
                     fontSize: 10
                   ),
                   labelStyle: TextStyle(
@@ -152,7 +152,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     borderSide: BorderSide(color: Colors.black),
                   ),
                   hintStyle: TextStyle(
-                      color: Colors.grey,
+                      color: Colors.black,
                       fontSize: 10
                   ),
                   labelStyle: TextStyle(
@@ -181,7 +181,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     borderSide: BorderSide(color: Colors.black),
                   ),
                   hintStyle: TextStyle(
-                      color: Colors.grey,
+                      color: Colors.black,
                       fontSize: 10
                   ),
                   labelStyle: TextStyle(
@@ -208,7 +208,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     borderSide: BorderSide(color: Colors.black),
                   ),
                   hintStyle: TextStyle(
-                      color: Colors.grey,
+                      color: Colors.black,
                       fontSize: 10
                   ),
                   labelStyle: TextStyle(

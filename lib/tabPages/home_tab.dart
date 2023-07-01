@@ -23,7 +23,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
 
   GoogleMapController? newGoogleMapController;
   final Completer<GoogleMapController> _controllerGoogleMap =
-  Completer<GoogleMapController>();
+  Completer();
 
 
   static const CameraPosition _kGooglePlex = CameraPosition(
@@ -31,6 +31,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
     zoom: 14.4746,
   );
 
+  Position? doctorCurrentPosition;
   var geoLocator = Geolocator();
 
   LocationPermission? _locationPermission;
@@ -88,7 +89,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
         onlineDoctorData.specialty = (snap.snapshot.value as Map)["service_details"]["specialty"];
 
         print("Service Details :: ");
-        print(onlineDoctorData.base_price);
+
         print(onlineDoctorData.institution_name);
         print(onlineDoctorData.registeredId);
       }
@@ -125,7 +126,6 @@ class _HomeTabPageState extends State<HomeTabPage> {
 
             //black theme google map
             //blackThemeGoogleMap();
-
             locateDoctorPosition();
           },
         ),

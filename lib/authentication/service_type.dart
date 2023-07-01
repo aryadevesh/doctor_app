@@ -152,7 +152,7 @@ class _ServiceTypeState extends State<ServiceType>
               ),
               TextField(
                 controller: visitingPriceTextEditingController,
-                keyboardType: TextInputType.text,
+                keyboardType: TextInputType.number,
                 style:const TextStyle(
                     color: Colors.black
                 ),
