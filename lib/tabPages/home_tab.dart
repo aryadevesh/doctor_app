@@ -31,7 +31,6 @@ class _HomeTabPageState extends State<HomeTabPage> {
     zoom: 14.4746,
   );
 
-  Position? doctorCurrentPosition;
   var geoLocator = Geolocator();
 
   LocationPermission? _locationPermission;

@@ -16,7 +16,7 @@ import '../widgets/progress_dialog.dart';
 class NewTreatmentScreen extends StatefulWidget {
 
   userVisitRequestInformation? userVisitRequestDetails;
-  NewTreatmentScreen({super.key,
+  NewTreatmentScreen({
     this.userVisitRequestDetails,
 });
 
@@ -195,6 +195,7 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
     streamSubscriptionDoctorLivePosition = Geolocator.getPositionStream()
         .listen((Position position)
     {
+
       doctorCurrentPosition = position;
       onlineDoctorCurrentPosition = position;
 
@@ -554,7 +555,7 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
 
   }
 
-  saveAssignedDoctorDetailsToUserVisitRequest()
+  saveAssignedDoctorDetailsToUserVisitRequest ()
   {
     DatabaseReference databaseReference = FirebaseDatabase.instance.ref()
         .child("All visit Requests")
@@ -571,8 +572,8 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
     databaseReference.child("doctorId").set(onlineDoctorData.id);
     databaseReference.child("doctorName").set(onlineDoctorData.name);
     databaseReference.child("doctorPhone").set(onlineDoctorData.phone);
-    databaseReference.child("service_details").set(onlineDoctorData.service_type.toString() + onlineDoctorData.base_price.toString());
-
+    databaseReference.child("service_details").set(onlineDoctorData.service_type.toString());
+    databaseReference.child("base_price").set(onlineDoctorData.base_price.toString());
     saveVisitRequestIdToDoctorHistory();
   }
 
