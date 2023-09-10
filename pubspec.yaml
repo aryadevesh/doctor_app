@@ -48,6 +48,7 @@ dependencies:
   flutter_geofire: ^2.0.3
   firebase_messaging: ^14.2.3
   assets_audio_player: ^3.0.6
+  flutter_dotenv: ^5.1.0
 
 
 dev_dependencies:
