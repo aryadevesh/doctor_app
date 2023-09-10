@@ -1,7 +1,7 @@
 /# doctor_app
 
 A new Flutter project.
-
+(I will change the read me soon)
 ## Getting Started
 
 This project is a starting point for a Flutter application.
