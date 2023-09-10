@@ -5,6 +5,7 @@ A new Flutter project.
 ## Getting Started
 
 This project is a starting point for a Flutter application.
+Please provide your own Google Maps API in map_key.dart in lib/global folder to make it work. The project is still in progress so please let me cook 🙏😌.
 
 A few resources to get you started if this is your first Flutter project:
 
