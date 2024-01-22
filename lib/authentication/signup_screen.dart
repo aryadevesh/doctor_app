@@ -52,7 +52,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           password: passwordTextEditingController.text.trim(),
         ).catchError((msg){
           Navigator.pop(context);
-          Fluttertoast.showToast(msg: "Error: " + msg.toString());
+          Fluttertoast.showToast(msg: "Error: $msg");
         })
     ).user;
 
@@ -64,6 +64,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         "name": nameTextEditingController.text.trim(),
         "email": emailTextEditingController.text.trim(),
         "phone": phoneTextEditingController.text.trim(),
+        "blockStatus": "yes",
       };
 
       DatabaseReference doctorsRef = FirebaseDatabase.instance.ref().child("doctors");
@@ -71,7 +72,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
       currentFirebaseUser = firebaseUser;
       Fluttertoast.showToast(msg: "Account has been Created.");
-      Navigator.push(context, MaterialPageRoute(builder: (c)=> ServiceType()));
+      Navigator.push(context, MaterialPageRoute(builder: (c)=> const ServiceType()));
     }
     else
     {
@@ -79,6 +80,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
       Fluttertoast.showToast(msg: "Account has not been Created.");
     }
   }
+
+  checkIfTheNetworkAvailable(){
+    validateForm();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -223,7 +229,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ElevatedButton(
                 onPressed:()
               {
-                validateForm();
+                checkIfTheNetworkAvailable();
               },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.lightBlueAccent,
@@ -244,7 +250,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     "Already have an Account, Login Here"
                 ),
                 onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder:(c)=>LoginScreen()));
+                  Navigator.push(context, MaterialPageRoute(builder:(c)=>const LoginScreen()));
                 },
               ),
             ],

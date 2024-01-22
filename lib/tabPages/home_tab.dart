@@ -27,17 +27,17 @@ class _HomeTabPageState extends State<HomeTabPage> {
 
 
   static const CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
+    target: LatLng(23.555930,79.449055),
+    zoom: 5,
   );
 
   var geoLocator = Geolocator();
 
   LocationPermission? _locationPermission;
 
-  String statusText = "Now offline";
-  Color buttonColor = Colors.grey;
-  bool isDoctorActive = false;
+
+
+
 
 
 
@@ -60,10 +60,10 @@ class _HomeTabPageState extends State<HomeTabPage> {
     CameraPosition cameraPosition = CameraPosition(target: latLngPosition, zoom: 14);
 
     newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-    // ignore: use_build_context_synchronously
-    String humanReadableAddress = await AssistantMethods.searchAddressForGeographicCoOrdinates(doctorCurrentPosition!, context);
-    print("this is your address = " + humanReadableAddress);
 
+    String humanReadableAddress = await AssistantMethods.searchAddressForGeographicCoOrdinates(doctorCurrentPosition!, context);
+
+    AssistantMethods.readDoctorRatings(context);
   }
 
   readCurrentDoctorInformation () async{
@@ -86,18 +86,12 @@ class _HomeTabPageState extends State<HomeTabPage> {
         onlineDoctorData.registeredId = (snap.snapshot.value as Map)["service_details"]["registeredId"];
         onlineDoctorData.service_type = (snap.snapshot.value as Map)["service_details"]["service_type"];
         onlineDoctorData.specialty = (snap.snapshot.value as Map)["service_details"]["specialty"];
-
-        print("Service Details :: ");
-
-        print(onlineDoctorData.institution_name);
-        print(onlineDoctorData.registeredId);
       }
     });
     PushNotificationSystem pushNotificationSystem = PushNotificationSystem();
     pushNotificationSystem.initializeCloudMessaging(context);
     pushNotificationSystem.generateAndGetToken();
-
-
+    AssistantMethods.readDoctorEarnings(context);
   }
 
   @override

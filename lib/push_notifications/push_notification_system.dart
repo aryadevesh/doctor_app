@@ -4,7 +4,6 @@ import 'package:doctor_app/models/user_visit_request_information.dart';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -34,9 +33,13 @@ class PushNotificationSystem {
       readVisitRequestInformation(remoteMessage!.data["visitRequestId"],context);
 
     });
+
+
   }
 
-  readVisitRequestInformation(String userVisitRequestId, context){
+  readVisitRequestInformation (String userVisitRequestId,BuildContext context){
+
+    final currentContext = context;
     FirebaseDatabase.instance.ref()
         .child("All visit Requests")
         .child(userVisitRequestId)
@@ -81,7 +84,7 @@ class PushNotificationSystem {
 
       }
       else{
-        Fluttertoast.showToast(msg: "This Visit Request Id do not exist.");
+        Fluttertoast.showToast(msg: "This Request Id do not exist.");
       }
     });
   }

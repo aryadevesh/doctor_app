@@ -1,9 +1,11 @@
 import 'dart:async';
-
 import 'package:doctor_app/authentication/login_screen.dart';
-import 'package:doctor_app/authentication/signup_screen.dart';
+import 'package:doctor_app/authentication/service_type.dart';
 import 'package:doctor_app/mainScreens/main_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../global/global.dart';
 
@@ -16,19 +18,56 @@ class MySplashScreen extends StatefulWidget {
 
 class _MySplashScreenState extends State<MySplashScreen>
 {
+  //Navigator.push(context, MaterialPageRoute(builder: (c)=> MainScreen()));
   startTimer(){
     Timer(const Duration(seconds: 1), () async
     {
-      if(fAuth.currentUser != null)
-      {
-        currentFirebaseUser = fAuth.currentUser;
-        Navigator.push(context, MaterialPageRoute(builder: (c)=> MainScreen()));
+      final currentUser = fAuth.currentUser;
+      if (currentUser != null) {
+        DatabaseReference doctorsRef = FirebaseDatabase.instance.ref().child(
+            "doctors").child(currentUser.uid);
+        doctorsRef.once().then((snap) {
+          if (snap.snapshot.value != null) {
+            if ((snap.snapshot.value as Map)["service_details"] == null) {
+              // AssistantMethods.displaySnackBar(
+              //     "Please fill all the necessary details first!", context);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (c) => const ServiceType()));
+            }
+            else if((snap.snapshot.value as Map)["blockStatus"] == "no") {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (c) => const MainScreen()));
+            }
+            else {
+              FirebaseAuth.instance.signOut();
+              Fluttertoast.showToast(
+                msg: "Either wait for your verification or Please contact admin: aryadevesh78@gmail.com",
+                toastLength: Toast.LENGTH_LONG,
+              );
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (c) => const LoginScreen()));
+            }
+          }
+          else {
+            FirebaseAuth.instance.signOut();
+            Fluttertoast.showToast(
+              msg: "Either wait for your verification or Please contact admin: aryadevesh78@gmail.com",
+            );
+            Navigator.push(
+                context, MaterialPageRoute(builder: (c) => const LoginScreen()));
+          }
+        });
       }
-      else
-      {
-        Navigator.push(context, MaterialPageRoute(builder: (c)=>  LoginScreen()));
+      else {
+        FirebaseAuth.instance.signOut();
+        //AssistantMethods.displaySnackBar(
+        //   "your records does not exist as a Doctor.", context);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (c) => const LoginScreen()));
       }
-      // send user to home screen
+
     });
   }
   @override

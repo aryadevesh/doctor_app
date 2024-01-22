@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -16,7 +15,7 @@ import '../widgets/progress_dialog.dart';
 class NewTreatmentScreen extends StatefulWidget {
 
   userVisitRequestInformation? userVisitRequestDetails;
-  NewTreatmentScreen({
+  NewTreatmentScreen({super.key,
     this.userVisitRequestDetails,
 });
 
@@ -30,17 +29,17 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
   final Completer<GoogleMapController> _controllerGoogleMap = Completer<GoogleMapController>();
 
   static const CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
+    target: LatLng(23.555930,79.449055),
+    zoom: 5,
   );
 
   String? buttonTitle = "Arrived";
   Color? buttonColor = Colors.green;
   String statusBtn = "accepted";
 
-  Set<Marker> setOfMarkers = Set<Marker>();
-  Set<Circle> setOfCircle = Set<Circle>();
-  Set<Polyline> setOfPolyline = Set<Polyline>();
+  Set<Marker> setOfMarkers = <Marker>{};
+  Set<Circle> setOfCircle = <Circle>{};
+  Set<Polyline> setOfPolyline = <Polyline>{};
   List<LatLng> polyLinePositionCoordinates = [];
   PolylinePoints polylinePoints = PolylinePoints();
 
@@ -61,7 +60,7 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
   // originLatLng = doctor Current Location
   // destinationLatLng = user PickUp Location
 
-  Future<void> drawPolyLineFromOriginToDestination(LatLng originLatLng, LatLng destinationLatLng) async
+  Future<void> drawPolyLineFromOriginToDestination(LatLng originLatLng, LatLng destinationLatLng, context) async
   {
     showDialog(
       context: context,
@@ -69,8 +68,6 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
     );
 
     var directionDetailsInfo = await AssistantMethods.obtainOriginToDestinationDirectionDetails(originLatLng, destinationLatLng);
-
-    Navigator.pop(context);
 
     print("These are points = ");
     print(directionDetailsInfo!.e_points);
@@ -82,10 +79,9 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
 
     if(decodedPolyLinePointsResultList.isNotEmpty)
     {
-      decodedPolyLinePointsResultList.forEach((PointLatLng pointLatLng)
-      {
+      for (var pointLatLng in decodedPolyLinePointsResultList) {
         polyLinePositionCoordinates.add(LatLng(pointLatLng.latitude, pointLatLng.longitude));
-      });
+      }
     }
 
     setOfPolyline.clear();
@@ -191,7 +187,7 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
 
   getDoctorsLocationUpdatesAtRealTime()
   {
-    LatLng oldLatLng = LatLng(0,0);
+    LatLng oldLatLng = const LatLng(0,0);
     streamSubscriptionDoctorLivePosition = Geolocator.getPositionStream()
         .listen((Position position)
     {
@@ -242,7 +238,6 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
           onlineDoctorCurrentPosition!.latitude,
           onlineDoctorCurrentPosition!.longitude);
 
-      var destinationLatLng ;
        if(visitRequestStatus == "accepted")
        {
          var destinationLatLng = widget.userVisitRequestDetails!.originLatLng;
@@ -299,7 +294,7 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
             );
             var userPickUpLatLng = widget.userVisitRequestDetails!.originLatLng;
 
-            drawPolyLineFromOriginToDestination(doctorCurrentLatLng, userPickUpLatLng!);
+            drawPolyLineFromOriginToDestination(doctorCurrentLatLng, userPickUpLatLng!, context);
 
             getDoctorsLocationUpdatesAtRealTime();
 
@@ -332,7 +327,7 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
                     children:[
                        //Time to reach the patient
                       Text(
-                        "Arriving in "+ durationFromOriginToDestination,
+                        "Arriving in $durationFromOriginToDestination",
                         style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -459,9 +454,7 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
                           });
                         }
                         else if(visitRequestStatus == "onTreatment"){ //doctor has started his treatment
-
                              endTreatmentNow();
-
                         }
                       },
                         style: ElevatedButton.styleFrom(
@@ -511,7 +504,7 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
     FirebaseDatabase.instance.ref().child("All visit Requests")
         .child(widget.userVisitRequestDetails!.visitRequestId!)
         .child("treatmentAmount")
-        .set(onlineDoctorData.base_price.toString() + " Extra If Applicable");
+        .set("${onlineDoctorData.base_price} Extra If Applicable");
     FirebaseDatabase.instance.ref().child("All visit Requests")
         .child(widget.userVisitRequestDetails!.visitRequestId!)
         .child("status")
@@ -583,7 +576,6 @@ class _NewTreatmentScreenState extends State<NewTreatmentScreen> {
         .child("doctors")
         .child(currentFirebaseUser!.uid)
         .child("treatmentsHistory");
-
     treatmentsHistoryRef.child(widget.userVisitRequestDetails!.visitRequestId!).set(true);
   }
 }

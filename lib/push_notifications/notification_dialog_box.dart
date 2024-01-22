@@ -18,7 +18,7 @@ class NotificationDialogBox extends StatefulWidget
 {
   userVisitRequestInformation? userVisitRequestDetails;
 
-  NotificationDialogBox({this.userVisitRequestDetails});
+  NotificationDialogBox({super.key, this.userVisitRequestDetails});
 
   @override
   State<NotificationDialogBox> createState() => _NotificationDialogBoxState();
@@ -247,7 +247,7 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox>
       }
       else
       {
-            Fluttertoast.showToast(msg: "This visit request don't exist.");
+            Fluttertoast.showToast(msg: "This  request don't exist.");
       }
     });
   }

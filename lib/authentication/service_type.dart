@@ -7,8 +7,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 class ServiceType extends StatefulWidget
 {
   const ServiceType({super.key});
-
-
   @override
   State<ServiceType> createState() => _ServiceTypeState();
 }
@@ -35,6 +33,7 @@ class _ServiceTypeState extends State<ServiceType>
       "service_type": selectedServiceType,
       "base_price": visitingPriceTextEditingController.text.trim(),
     };
+    final currentFirebaseUser = fAuth.currentUser;
 
     DatabaseReference doctorsRef = FirebaseDatabase.instance.ref().child("doctors");
     doctorsRef.child(currentFirebaseUser!.uid).child("service_details").set(doctorServiceInfoMap);
@@ -97,7 +96,6 @@ class _ServiceTypeState extends State<ServiceType>
                 ),
 
               ),
-
               TextField(
                 controller: specialtyTextEditingController,
                 keyboardType: TextInputType.text,
@@ -196,11 +194,11 @@ class _ServiceTypeState extends State<ServiceType>
                 },
                 items: serviceTypesList.map((service){
                   return DropdownMenuItem(
+                    value: service,
                     child: Text(
                     service,
                     style: const TextStyle(color: Colors.black),
                     ),
-                    value: service,
                   );
                 }).toList(),
               ),
@@ -214,6 +212,9 @@ class _ServiceTypeState extends State<ServiceType>
                     && registeredIdTextEditingController.text.isNotEmpty && selectedServiceType != null)
                 {
                   saveServiceInfo();
+                }
+                else{
+                  Fluttertoast.showToast(msg: "Fill complete details then save.");
                 }
               },
                 style: ElevatedButton.styleFrom(

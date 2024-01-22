@@ -46,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
           password: passwordTextEditingController.text.trim(),
         ).catchError((msg){
           Navigator.pop(context);
-          Fluttertoast.showToast(msg: "Error: " + msg.toString());
+          Fluttertoast.showToast(msg: "Error: $msg");
         })
     ).user;
 
@@ -58,7 +58,6 @@ class _LoginScreenState extends State<LoginScreen> {
         final snap = doctorkey.snapshot;
         if(snap.value != null){
           currentFirebaseUser = firebaseUser;
-          Fluttertoast.showToast(msg: "Logged in Successfully.");
           Navigator.push(context, MaterialPageRoute(builder: (c)=> const MySplashScreen()));
         }else{
           Fluttertoast.showToast(msg: "No record exist with this email");
@@ -185,7 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   "Don't have an account? Signup Here"
                 ),
                 onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder:(c)=>SignUpScreen()));
+                  Navigator.push(context, MaterialPageRoute(builder:(c)=>const SignUpScreen()));
                 },
               ),
 

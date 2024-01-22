@@ -46,10 +46,12 @@ dependencies:
   provider: ^6.0.5
   flutter_polyline_points: ^1.0.0
   flutter_geofire: ^2.0.3
-  firebase_messaging: ^14.2.3
+  firebase_messaging: ^14.7.2
   assets_audio_player: ^3.0.6
   flutter_dotenv: ^5.1.0
-
+  intl: ^0.18.1
+  smooth_star_rating_nsafe: ^1.0.0+1
+  connectivity_plus:
 
 dev_dependencies:
   flutter_test:

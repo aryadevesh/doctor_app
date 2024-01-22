@@ -7,7 +7,7 @@ class DoctorFeesCollectionDialog extends StatefulWidget
 {
   String? totalFareAmount;
 
-  DoctorFeesCollectionDialog({this.totalFareAmount});
+  DoctorFeesCollectionDialog({super.key, this.totalFareAmount});
 
   @override
   State<DoctorFeesCollectionDialog> createState() => _DoctorFeesCollectionDialogState();
@@ -54,7 +54,7 @@ class _DoctorFeesCollectionDialogState extends State<DoctorFeesCollectionDialog>
             const SizedBox(height: 16,),
 
             Text(
-              "Rs." + onlineDoctorData.base_price.toString(),
+              "Rs.${onlineDoctorData.base_price}",
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
@@ -94,7 +94,7 @@ class _DoctorFeesCollectionDialogState extends State<DoctorFeesCollectionDialog>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
-                      "Collect Cash",
+                      " Payment Collected",
                       style: TextStyle(
                         fontSize: 20,
                         color: Colors.white,
@@ -102,7 +102,7 @@ class _DoctorFeesCollectionDialogState extends State<DoctorFeesCollectionDialog>
                       ),
                     ),
                     Text(
-                      "Rs." + onlineDoctorData.base_price.toString(),
+                      "Rs.${onlineDoctorData.base_price}",
                       style: const TextStyle(
                         fontSize: 20,
                         color: Colors.white,
