@@ -1,4 +1,4 @@
-# Flutter Service Booking Project
+# Flutter Medical Service Booking Project
 
 ## Overview
 
